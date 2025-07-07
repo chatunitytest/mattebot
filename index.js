@@ -13,10 +13,10 @@ const { name, author } = require(join(__dirname, './package.json'))
 const { say } = cfonts
 const rl = createInterface(process.stdin, process.stdout)
 
-say('\nChatunity\nBot', {
+say('\nMATTE\nBOT', {
 font: 'block',
 align: 'center',
-color: ['cyan', 'green']})
+color: ['red', 'black']})
 
 var isRunning = false
 /**
@@ -28,7 +28,7 @@ if (isRunning) return
 isRunning = true
 let args = [join(__dirname, file), ...process.argv.slice(2)]
 
-say('developed by chatunity', {
+say('developed by matte', {
 font: 'console',
 align: 'center',
 color: ['cyan', 'blue']})
