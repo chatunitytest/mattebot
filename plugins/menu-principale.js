@@ -1,0 +1,69 @@
+import { promises as fs } from 'fs';
+
+let handler = async (m, { conn, usedPrefix }) => {
+  const botName = global.db.data.nomedelbot || "𝕸𝖆𝖙𝖙𝖊 𝖇𝖔𝖙✦";
+  const vs = global.db.data.version || '1.0.0';
+
+  const menuText = `
+⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
+       ✦ 𝐌𝐄𝐍𝐔 𝐏𝐑𝐈𝐍𝐂𝐈𝐏𝐀𝐋𝐄 ✦  
+              𝐌𝐀𝐓𝐓𝐄𝐁𝐎𝐓
+⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
+
+📜 𝗖𝗼𝗺𝗮𝗻𝗱𝗶 𝗚𝗲𝗻𝗲𝗿𝗮𝗹𝗶:
+
+⟡ ${usedPrefix}proprietario
+⟡ ${usedPrefix}funzioni
+⟡ ${usedPrefix}admin
+⟡ ${usedPrefix}gruppo
+⟡ ${usedPrefix}owner
+⟡ ${usedPrefix}script
+⟡ ${usedPrefix}installa
+⟡ ${usedPrefix}crediti
+
+────────────────────────
+🔰 𝐁𝐎𝐓: ${botName}
+📦 𝐕𝐄𝐑𝐒𝐈𝐎𝐍𝐄: ${vs}
+⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
+`.trim();
+
+  const menuButtons = [
+    { buttonId: `${usedPrefix}proprietario`, buttonText: { displayText: '👤 Proprietario' }, type: 1 },
+    { buttonId: `${usedPrefix}funzioni`, buttonText: { displayText: '⚙️ Funzioni' }, type: 1 },
+    { buttonId: `${usedPrefix}admin`, buttonText: { displayText: '🛡️ Admin' }, type: 1 },
+    { buttonId: `${usedPrefix}gruppo`, buttonText: { displayText: '👥 Gruppo' }, type: 1 },
+    { buttonId: `${usedPrefix}owner`, buttonText: { displayText: '👑 Owner' }, type: 1 },
+    { buttonId: `${usedPrefix}script`, buttonText: { displayText: '📜 Script' }, type: 1 },
+    { buttonId: `${usedPrefix}installa`, buttonText: { displayText: '📦 Installa' }, type: 1 },
+    { buttonId: `${usedPrefix}crediti`, buttonText: { displayText: '💳 Crediti' }, type: 1 },
+  ];
+
+  await conn.sendMessage(m.chat, {
+    text: menuText,
+    buttons: menuButtons,
+    headerType: 4,
+    contextInfo: {
+      externalAdReply: {
+        title: `${botName} - 𝐌𝐄𝐍𝐔 𝐏𝐑𝐈𝐍𝐂𝐈𝐏𝐀𝐋𝐄`,
+        body: "𝐁𝐘 𝐌𝐀𝐓𝐓𝐄 - 𝐓𝐇𝐄 𝐁𝐄𝐒𝐓",
+        thumbnail: await fs.readFile('./storage/image/origin.jpg'),
+        mediaType: 1,
+        showAdAttribution: true,
+        renderLargerThumbnail: true,
+        // forwardingScore: 1,
+        // isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: '120363370244642449@newsletter',
+          serverMessageId: '',
+          newsletterName: botName
+        }
+      }
+    }
+  }, { quoted: m });
+};
+
+handler.help = ["menu"];
+handler.tags = ['menu'];
+handler.command = /^(menu|comandi)$/i;
+
+export default handler;
