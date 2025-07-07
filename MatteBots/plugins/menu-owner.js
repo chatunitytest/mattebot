@@ -61,7 +61,7 @@ let handler = async (m, { conn, usedPrefix }) => {
       externalAdReply: {
         title: "𝕸𝖆𝖙𝖙𝖊 𝖇𝖔𝖙✦ - 𝐎𝐖𝐍𝐄𝐑 𝐌𝐄𝐍𝐔",
         body: "BY MATTE - 𝐓𝐇𝐄 𝐁𝐄𝐒𝐓",
-        thumbnail: await fs.readFile('./storage/image/origin.jpg'), // Aggiungi l'immagine di anteprima
+        thumbnail: await fs.readFile('./storage/image/chatunity.png'), // Aggiungi l'immagine di anteprima
         mediaType: 1,
         showAdAttribution: true,
         renderLargerThumbnail: true,

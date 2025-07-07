@@ -32,7 +32,7 @@ const handler = async (m, { conn, usedPrefix }) => {
       externalAdReply: {
         title: "𝕸𝖆𝖙𝖙𝖊 𝖇𝖔𝖙✦ - 𝐌𝐄𝐍𝐔 𝐀𝐔𝐃𝐈𝐎",
         body: "Effetti audio disponibili",
-        thumbnail: await fs.readFile('./storage/image/origin.jpg'),
+        thumbnail: await fs.readFile('./storage/image/chatunity.png'),
         mediaType: 1,
         showAdAttribution: true,
         renderLargerThumbnail: true,

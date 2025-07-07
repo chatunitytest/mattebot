@@ -46,7 +46,7 @@ let handler = async (m, { conn, usedPrefix }) => {
       externalAdReply: {
         title: `${botName} - 𝐌𝐄𝐍𝐔 𝐏𝐑𝐈𝐍𝐂𝐈𝐏𝐀𝐋𝐄`,
         body: "𝐁𝐘 𝐌𝐀𝐓𝐓𝐄 - 𝐓𝐇𝐄 𝐁𝐄𝐒𝐓",
-        thumbnail: await fs.readFile('./storage/image/origin.jpg'),
+        thumbnail: await fs.readFile('./storage/image/chatunity.png'),
         mediaType: 1,
         showAdAttribution: true,
         renderLargerThumbnail: true,

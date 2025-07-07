@@ -78,7 +78,7 @@ let handler = async (m, { conn, usedPrefix }) => {
       externalAdReply: {
         title: "𝕸𝖆𝖙𝖙𝖊 𝖇𝖔𝖙✦ - 𝐌𝐄𝐍𝐔 𝐆𝐑𝐔𝐏𝐏𝐎",
         body: "Comandi utili per il tuo gruppo",
-        thumbnail: await fs.readFile('./storage/image/origin.jpg'),
+        thumbnail: await fs.readFile('./storage/image/chatunity.png'),
         mediaType: 1,
         showAdAttribution: true,
         renderLargerThumbnail: true,
