@@ -7,10 +7,10 @@ global.botnumber = ""
 global.confirmCode = ""
 
 global.owner = [
-  ['1(829)557-5835', 'MATTE', true],['+39 388 476 9557', 'THOKA', true] // VIETATO ELIMINARE IL CREATORE (se lo fai te ne pentirai)
-  ['xxxxxxxxxx'], // al posto del X metti il tuo numero di telefono
+  ['393515533859', '𝐂𝐡𝐚𝐭𝐔𝐧𝐢𝐭𝐲', true], // VIETATO ELIMINARE IL CREATORE (se lo fai te ne pentirai)
+  ['xxxxxxxxxx',], // al posto del X metti il tuo numero di telefono
   ['xxxxxxxxxx'],	
-  ['xxxxxxxxxx'],
+  ['xxxxxxxxxx',],
   ['xxxxxxxxxx'],
   ['xxxxxxxxxx'],
 ]
