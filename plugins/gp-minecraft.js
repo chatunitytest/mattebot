@@ -9,7 +9,7 @@ let handler = async (m, { conn }) => {
                   `🔒 Sicuro e senza download\n` +
                   `🌐 Gioca direttamente dal browser\n\n` +
                   `Apri il link sopra per giocare!`,
-            footer: '© MatteBot - Divertiti!',
+            footer: '© BixByBot - Divertiti!',
             mentions: [m.sender]
         }, { quoted: m });
 

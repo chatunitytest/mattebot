@@ -1,90 +1,143 @@
-import fs from 'fs';
-import os from 'os';
-import { performance } from 'perf_hooks';
+import { cpus as _cpus, totalmem, freemem } from 'os'
+import { performance } from 'perf_hooks'
+import { sizeFormatter } from 'human-readable'
 
-const tmas = number => {
-  const map = {'0': '𝟎', '1': '𝟏', '2': '𝟐', '3': '𝟑', '4': '𝟒', '5': '𝟓', '6': '𝟔', '7': '𝟕', '8': '𝟖', '9': '𝟗'};
-  return number.toString().split('').map(d => map[d] || d).join('');
-};
+let format = sizeFormatter({
+  std: 'JEDEC',
+  decimalPlaces: 2,
+  keepTrailingZeroes: false,
+  render: (literal, symbol) => `${literal} ${symbol}B`,
+})
 
-const clockString = ms => {
-  const days = String(Math.floor(ms / 86400000)).padStart(2, '0');
-  const hours = String(Math.floor((ms % 86400000) / 3600000)).padStart(2, '0');
-  const minutes = String(Math.floor((ms % 3600000) / 60000)).padStart(2, '0');
-  const seconds = String(Math.floor((ms % 60000) / 1000)).padStart(2, '0');
-  return `${tmas(days)}:${tmas(hours)}:${tmas(minutes)}:${tmas(seconds)}`;
-};
+let handler = async (m, { conn, usedPrefix, command }) => {
+  let nomeDelBot = global.db.data.nomedelbot || `𝐂𝐡𝐚𝐭𝐔𝐧𝐢𝐭𝐲`
+  let versioneBot = '5.2' // Specifica la versione del bot
+  let old = performance.now()
+  let neww = performance.now()
+  let speed = (neww - old).toFixed(2) // Limita la velocità a 2 decimali
+  let uptime = process.uptime() * 1000
 
-const ramBar = (used, total, length = 20) => {
-  const ratio = used / total;
-  const filled = Math.round(ratio * length);
-  const empty = length - filled;
-  return `|${'█'.repeat(filled)}${'░'.repeat(empty)}|`;
-};
+  // CPU info
+  const cpus = _cpus().map(cpu => {
+    cpu.total = Object.keys(cpu.times).reduce((last, type) => last + cpu.times[type], 0)
+    return cpu
+  })
 
-const handler = async (m, { conn }) => {
-  const _uptime = process.uptime() * 1000;
-  const uptime = clockString(_uptime);
+  const cpu = cpus.reduce((last, cpu, _, { length }) => {
+    last.total += cpu.total
+    last.speed += cpu.speed / length
+    last.times.user += cpu.times.user
+    last.times.nice += cpu.times.nice
+    last.times.sys += cpu.times.sys
+    last.times.idle += cpu.times.idle
+    last.times.irq += cpu.times.irq
+    return last
+  }, {
+    speed: 0,
+    total: 0,
+    times: {
+      user: 0,
+      nice: 0,
+      sys: 0,
+      idle: 0,
+      irq: 0
+    }
+  })
 
-  const speedStart = performance.now();
-  const speedEnd = performance.now();
-  const speed = (speedEnd - speedStart).toFixed(4);
-  const speedWithFont = tmas(speed);
+  let cpuModel = cpus[0]?.model || 'Unknown Model'
+  let cpuSpeed = cpu.speed.toFixed(2)
+  let networkSpeed = 'N/A'
 
-  const totalMem = os.totalmem();
-  const freeMem = os.freemem();
-  const usedMem = totalMem - freeMem;
-  const totalMemGB = (totalMem / (1024 ** 3)).toFixed(2);
-  const usedMemGB = (usedMem / (1024 ** 3)).toFixed(2);
-  const ramVisual = ramBar(usedMem, totalMem);
+  let caption = `╭━〔🚀𝑺𝑻𝑨𝑻𝐎 𝑺𝑰𝑺𝑻𝑬𝑴𝑨🚀〕━┈⊷
+┃◈╭─────────────·๏
+┃◈┃• ⌛ *Uptime*: ${clockString(uptime)}
+┃◈┃• ⚡ *Ping*: ${speed} ms
+┃◈┃
+┃◈┃• 💻 *CPU*: ${cpuModel}
+┃◈┃• 🔋 *Usage*: ${cpuSpeed} MHz 
+┃◈┃
+┃◈┃• 💾 *RAM*: ${format(totalmem() - freemem())} / ${format(totalmem())}
+┃◈┃• 🟢 *Free*: ${format(freemem())}
+┃◈┃
+┃◈┃• 🌐 *Network*: ${networkSpeed}
+┃◈└───────────┈⊷
+┃◈┃• *𝑽𝑬𝑹𝑺𝑰𝑶𝑵𝑬:* ${vs}
+┃◈┃•  𝐂𝐎𝐋𝐋𝐀𝐁: 𝐃𝐑𝐆𝐁
+┃◈┃• *𝐒𝐔𝐏𝐏𝐎𝐑𝐓𝐎:* (.supporto)
+╰━━━━━━━━━━━━━┈·๏
 
-  const { heapUsed, heapTotal } = process.memoryUsage();
-  const heapUsedMB = (heapUsed / (1024 ** 2)).toFixed(2);
-  const heapTotalMB = (heapTotal / (1024 ** 2)).toFixed(2);
+`
 
-  const mention = m.mentionedJid?.[0] || m.quoted?.sender || m.sender;
-  const image = fs.readFileSync('./icone/ping.png');
+  const profilePictureUrl = await fetchProfilePictureUrl(conn, m.sender)
 
-  const nomeDelBot = 'Matte bot';
-
-  const timestamp = new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome' });
-  const statusEmoji = _uptime > 0 ? '🟢' : '🔴';
-
-  const info = `
-⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
-   ⚙️ 𝘚𝘛𝘈𝘛𝘖 𝘉𝘖𝘛 – ${nomeDelBot} ${statusEmoji}
-⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
-
-⏱️ 𝗨𝗽𝘁𝗶𝗺𝗲: ${uptime}
-⚡ 𝗩𝗲𝗹𝗼𝗰𝗶𝘁𝗮̀: ${speedWithFont} 𝘀𝗲𝗰
-
-🧠 𝗥𝗔𝗠 𝗦𝗲𝗿𝘃𝗲𝗿: ${usedMemGB} GB / ${totalMemGB} GB
-${ramVisual}
-
-🔧 𝗠𝗲𝗺 𝗣𝗿𝗼𝗰𝗲𝘀𝘀𝗼: ${heapUsedMB} MB / ${heapTotalMB} MB
-
-📅 𝗢𝗿𝗮: ${timestamp}
-
-⬛ 𝘔𝘢𝘵𝘵𝘦 𝘣𝘰𝘵 — 𝘋𝘢𝘳𝘬 𝘔𝘰𝘥𝘦 ⬛
-`.trim();
-
-  const msg = {
-    key: {
-      participants: "0@s.whatsapp.net",
-      fromMe: false,
-      id: "ping_dark"
-    },
-    message: {
-      documentMessage: {
-        title: `${nomeDelBot} 𝗣𝗜𝗡𝗚 🏓`,
-        jpegThumbnail: image
+  let messageOptions = {
+    contextInfo: {
+      forwardingScore: 999,
+      isForwarded: true,
+      forwardedNewsletterMessageInfo: {
+        newsletterJid: '120363259442839354@newsletter',
+        serverMessageId: '',
+        newsletterName: `${nomeDelBot}`
       }
-    },
-    participant: "0@s.whatsapp.net"
-  };
+    }
+  }
 
-  conn.reply(m.chat, info, msg, m);
-};
+  if (profilePictureUrl !== 'default-profile-picture-url') {
+    try {
+      messageOptions.contextInfo.externalAdReply = {
+        title: nomeDelBot,
+        body: `Versione: ${versioneBot}`,
+        mediaType: 1,
+        renderLargerThumbnail: false,
+        previewType: 'thumbnail',
+        thumbnail: await fetchThumbnail('https://i.ibb.co/6RMtRXW0/dragonball.jpg'),
+      }
+    } catch (error) {
+      console.error('Error fetching thumbnail:', error)
+    }
+  }
 
-handler.command = /^(ping)$/i;
-export default handler;
+  try {
+    await conn.sendMessage(m.chat, {
+      text: caption,
+      ...messageOptions
+    })
+  } catch (error) {
+    console.error('Error sending message:', error)
+  }
+}
+
+async function fetchProfilePictureUrl(conn, sender) {
+  try {
+    return await conn.profilePictureUrl(sender)
+  } catch (error) {
+    console.error('Error fetching profile picture URL:', error)
+    return 'default-profile-picture-url' // Fallback URL in case of error
+  }
+}
+
+async function fetchThumbnail(url) {
+  try {
+    const response = await fetch(url)
+    if (!response.ok) throw new Error(`Failed to fetch thumbnail: ${response.statusText}`)
+    const buffer = await response.buffer()
+    return buffer
+  } catch (error) {
+    console.error('Error fetching thumbnail:', error)
+    return 'default-thumbnail' // Fallback thumbnail in case of error
+  }
+}
+
+handler.help = ['ping', 'speed']
+handler.tags = ['info', 'tools']
+handler.command = /^(ping)$/i
+
+export default handler
+
+function clockString(ms) {
+  let d = Math.floor(ms / 86400000)
+  let h = Math.floor(ms / 3600000) % 24
+  let m = Math.floor(ms / 60000) % 60
+  let s = Math.floor(ms / 1000) % 60
+  return [d, h, m, s].map(v => v.toString().padStart(2, 0)).join(':')
+}

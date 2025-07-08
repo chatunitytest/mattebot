@@ -1,4 +1,4 @@
-console.log('Preparo rosebot...')
+console.log('Preparo bixby...')
 import { join, dirname } from 'path'
 import { createRequire } from "module";
 import { fileURLToPath } from 'url'
@@ -13,10 +13,10 @@ const { name, author } = require(join(__dirname, './package.json'))
 const { say } = cfonts
 const rl = createInterface(process.stdin, process.stdout)
 
-say('\nMATTE\nBOT', {
+say('\nChatunity\nBot', {
 font: 'block',
 align: 'center',
-color: ['red', 'black']})
+color: ['cyan', 'green']})
 
 var isRunning = false
 /**
@@ -28,7 +28,7 @@ if (isRunning) return
 isRunning = true
 let args = [join(__dirname, file), ...process.argv.slice(2)]
 
-say('developed by matte', {
+say('developed by chatunity', {
 font: 'console',
 align: 'center',
 color: ['cyan', 'blue']})

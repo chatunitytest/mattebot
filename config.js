@@ -7,7 +7,7 @@ global.botnumber = ""
 global.confirmCode = ""
 
 global.owner = [
-  ['393515533859', '𝐂𝐡𝐚𝐭𝐔𝐧𝐢𝐭𝐲', true],['66621409462', 'matte', true],['393884769557', 'thoka', true], // VIETATO ELIMINARE IL CREATORE (se lo fai te ne pentirai)
+  ['1(829)557-5835', 'MATTE', true],['+39 388 476 9557', 'THOKA', true] // VIETATO ELIMINARE IL CREATORE (se lo fai te ne pentirai)
   ['xxxxxxxxxx',], // al posto del X metti il tuo numero di telefono
   ['xxxxxxxxxx'],	
   ['xxxxxxxxxx',],
@@ -53,19 +53,19 @@ global.imagen1 = ['./media/menu1.jpg']
 global.imagen4 = fs.readFileSync('./chatunity.png')
 
 
-global.packname = 'MATTE BOT'
+global.packname = '𝐂𝐡𝐚𝐭𝐔𝐧𝐢𝐭𝐲-𝐁𝐨𝐭'
 global.author = '𝐌𝐝'
 
 
 global.vs = '5.3'
 
-global.nomebot = 'MATTE BOT'
+global.nomebot = '𝐂𝐡𝐚𝐭𝐔𝐧𝐢𝐭𝐲-𝐁𝐨𝐭'
 
 global.multiplier = 69 
 global.maxwarn = '4' 
 
 
-global.wm = 'MATTE BOT'
+global.wm = '𝐂𝐡𝐚𝐭𝐔𝐧𝐢𝐭𝐲-𝐁𝐨𝐭'
 global.wait = 'ⓘ 𝐂𝐚𝐫𝐢𝐜𝐚𝐦𝐞𝐧𝐭𝐨 ...'
 
 

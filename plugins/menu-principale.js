@@ -1,69 +1,64 @@
-import { promises as fs } from 'fs';
+import { performance } from 'perf_hooks';
+import fetch from 'node-fetch';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
-let handler = async (m, { conn, usedPrefix }) => {
-  const botName = global.db.data.nomedelbot || "𝕸𝖆𝖙𝖙𝖊 𝖇𝖔𝖙✦";
-  const vs = global.db.data.version || '1.0.0';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-  const menuText = `
-⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
-       ✦ 𝐌𝐄𝐍𝐔 𝐏𝐑𝐈𝐍𝐂𝐈𝐏𝐀𝐋𝐄 ✦  
-              𝐌𝐀𝐓𝐓𝐄𝐁𝐎𝐓
-⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
+const handler = async (message, { conn, usedPrefix, command }) => {
+    const userCount = Object.keys(global.db.data.users).length;
+    const botName = global.db.data.nomedelbot || 'ChatUnity';
 
-📜 𝗖𝗼𝗺𝗮𝗻𝗱𝗶 𝗚𝗲𝗻𝗲𝗿𝗮𝗹𝗶:
+    const menuText = generateMenuText(usedPrefix, botName, userCount);
 
-⟡ ${usedPrefix}proprietario
-⟡ ${usedPrefix}funzioni
-⟡ ${usedPrefix}admin
-⟡ ${usedPrefix}gruppo
-⟡ ${usedPrefix}owner
-⟡ ${usedPrefix}script
-⟡ ${usedPrefix}installa
-⟡ ${usedPrefix}crediti
-
-────────────────────────
-🔰 𝐁𝐎𝐓: ${botName}
-📦 𝐕𝐄𝐑𝐒𝐈𝐎𝐍𝐄: ${vs}
-⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
-`.trim();
-
-  const menuButtons = [
-    { buttonId: `${usedPrefix}proprietario`, buttonText: { displayText: '👤 Proprietario' }, type: 1 },
-    { buttonId: `${usedPrefix}funzioni`, buttonText: { displayText: '⚙️ Funzioni' }, type: 1 },
-    { buttonId: `${usedPrefix}admin`, buttonText: { displayText: '🛡️ Admin' }, type: 1 },
-    { buttonId: `${usedPrefix}gruppo`, buttonText: { displayText: '👥 Gruppo' }, type: 1 },
-    { buttonId: `${usedPrefix}owner`, buttonText: { displayText: '👑 Owner' }, type: 1 },
-    { buttonId: `${usedPrefix}script`, buttonText: { displayText: '📜 Script' }, type: 1 },
-    { buttonId: `${usedPrefix}installa`, buttonText: { displayText: '📦 Installa' }, type: 1 },
-    { buttonId: `${usedPrefix}crediti`, buttonText: { displayText: '💳 Crediti' }, type: 1 },
-  ];
-
-  await conn.sendMessage(m.chat, {
-    text: menuText,
-    buttons: menuButtons,
-    headerType: 4,
-    contextInfo: {
-      externalAdReply: {
-        title: `${botName} - 𝐌𝐄𝐍𝐔 𝐏𝐑𝐈𝐍𝐂𝐈𝐏𝐀𝐋𝐄`,
-        body: "𝐁𝐘 𝐌𝐀𝐓𝐓𝐄 - 𝐓𝐇𝐄 𝐁𝐄𝐒𝐓",
-        thumbnail: await fs.readFile('./storage/image/rosebot.png'),
-        mediaType: 1,
-        showAdAttribution: true,
-        renderLargerThumbnail: true,
-        // forwardingScore: 1,
-        // isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: '120363370244642449@newsletter',
-          serverMessageId: '',
-          newsletterName: botName
+    const videoPath = path.join(__dirname, '../menu/edit1.mp4'); // Cambia il nome se necessario
+    await conn.sendMessage(
+        message.chat,
+        {
+            video: { url: videoPath },
+            caption: menuText,
+            footer: 'Scegli un menu:',
+            buttons: [
+                { buttonId: `${usedPrefix}menuadmin`, buttonText: { displayText: "🛡️ Menu Admin" }, type: 1 },
+                { buttonId: `${usedPrefix}menuowner`, buttonText: { displayText: "👑 Menu Owner" }, type: 1 },
+                { buttonId: `${usedPrefix}menusicurezza`, buttonText: { displayText: "🚨 Menu Sicurezza" }, type: 1 },
+                { buttonId: `${usedPrefix}menugruppo`, buttonText: { displayText: "👥 Menu Gruppo" }, type: 1 },
+                { buttonId: `${usedPrefix}menuia`, buttonText: { displayText: "🤖 Menu IA" }, type: 1 }
+            ],
+            viewOnce: true,
+            headerType: 4
         }
-      }
-    }
-  }, { quoted: m });
+    );
 };
 
-handler.help = ["menu"];
+handler.help = ['menu'];
 handler.tags = ['menu'];
 handler.command = /^(menu|comandi)$/i;
 
 export default handler;
+
+function generateMenuText(prefix, botName, userCount) {
+    return `
+
+╭〔 *💬 𝑴𝑬𝑵𝑼 𝑫𝑬𝑳 𝑩𝑶𝑻 💬* 〕┈⊷
+┃◈╭───────────·๏
+┃◈┃• 👑 *${prefix}staff*
+┃◈┃• 👑 *${prefix}egemonia*
+┃◈┃• 📜 *${prefix}candidati*
+┃◈┃• 📥 *${prefix}installa*
+┃◈┃• 📖 *${prefix}guida*
+┃◈┃• ⚙ *${prefix}sistema*
+┃◈┃• ❓ *${prefix}FAQ*
+┃◈┃• 🚀 *${prefix}ping*
+┃◈┃• 📝 *${prefix}segnala* (comando)
+┃◈┃• 💡 *${prefix}consiglia* (comando)
+┃◈┃
+┃◈└───────────┈⊷
+┃◈┃• *𝑽𝑬𝑹𝑺𝑰𝑶𝑵𝑬:* ${vs}
+┃◈┃•  𝐂𝐎𝐋𝐋𝐀𝐁: 𝐃𝐑𝐆𝐁
+┃◈┃• *𝐒𝐔𝐏𝐏𝐎𝐑𝐓𝐎:* (.supporto)
+╰━━━━━━━━━━━━━┈·๏
+`.trim();
+}

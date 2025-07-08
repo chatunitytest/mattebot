@@ -7,7 +7,7 @@ let handler = async (m, { conn, isROwner, text }) => {
         Object.keys(global.db.data.chats).forEach(chatId => {
             global.db.data.chats[chatId].isBanned = true;
         });
-        await m.reply('🚩  Mi sto segando...');
+        await m.reply('🚩  Mi sto spegnendo...');
         process.send('reset');
     } else {
         return m.react('✖️');

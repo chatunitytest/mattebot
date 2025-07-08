@@ -129,14 +129,23 @@ opcion = '1'
 if (!methodCodeQR && !methodCode && !fs.existsSync(`./${authFile}/creds.json`)) {
 do {
 let lineM = '⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ ⋯ 》';
-opcion = await question(`${lineM}  
-${chalk.redBright('🎭 𝐒𝐞𝐥𝐞𝐳𝐢𝐨𝐧𝐚 𝐮𝐧𝐚 𝐨𝐩𝐳𝐢𝐨𝐧𝐞 𝐩𝐞𝐫 𝐜𝐨𝐥𝐥𝐞𝐠𝐚𝐫𝐞𝐢𝐥 𝐭𝐮𝐨 𝐛𝐨𝐭 🎭:\n╔════════════════════════════╗\n║ 1 🔍 Tramite 𝐐𝐑 ✔️             ║')}
-${chalk.white.bgRed.bold.white('\n╠════════════════════════════╣')}
-${chalk.blueBright('\n║ 2 🔐 Tramite codice a 8 cifre ║\n╚════════════════════════════╝')}
-${lineM}\n${chalk.bold.magentaBright('---> ')}`)
+opcion = await question(`╭${lineM}  
+┊ ${chalk.blueBright('╭┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}
+┊ ${chalk.blueBright('┊')} ${chalk.blue.bgBlue.bold.cyan('METODO DI COLLEGAMENTO')}
+┊ ${chalk.blueBright('╰┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}   
+┊ ${chalk.blueBright('╭┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}     
+┊ ${chalk.italic.magenta('Scrivi solo il numero(1 o 2)')}
+┊ ${chalk.blueBright('┊')} ${chalk.italic.magenta('per connetterti')}
+┊ ${chalk.blueBright('╰┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')} 
+┊ ${chalk.blueBright('╭┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}    
+┊ ${chalk.blueBright('┊')} ${chalk.green.bgMagenta.bold.yellow('COME CONNETTERSI?')}
+┊ ${chalk.blueBright('┊')} ${chalk.bold.redBright(`⇢  Opzione 1:`)} ${chalk.greenBright('Codice qr')}
+┊ ${chalk.blueBright('┊')} ${chalk.bold.redBright(`⇢  Opzione 2:`)} ${chalk.greenBright('Codice 8 caratteri')}
+┊ ${chalk.blueBright('╰┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')} 
+╰${lineM}\n${chalk.bold.magentaBright('---> ')}`);
 if (!/^[1-2]$/.test(opcion)) {
 console.log(chalk.bold.redBright('Opzione non valida. Inserisci solo 1 o 2.'));
-}} while (opcion !== '1' && opcion !== '2' || fs.existsSync(`/.${authFile}/creds.json`))
+}} while (opcion !== '1' && opcion !== '2' || fs.existsSync(`./${authFile}/creds.json`))
 }
 
 console.info = () => {}

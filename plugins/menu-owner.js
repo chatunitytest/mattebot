@@ -1,95 +1,98 @@
-import os from 'os';
-import util from 'util';
-import humanReadable from 'human-readable';
-import { default as makeWASocket } from '@whiskeysockets/baileys';
-import { promises as fs } from 'fs';
 import { performance } from 'perf_hooks';
+import fetch from 'node-fetch'; // Assicurati di avere node-fetch installato
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
-let handler = async (m, { conn, usedPrefix }) => {
-  const botName = global.db.data.nomedelbot || "𝕸𝖆𝖙𝖙𝖊 𝖇𝖔𝖙✦";
-  const commandList = `
-⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
-    ✦ 𝗣𝗔𝗡𝗡𝗘𝗟𝗟𝗢 𝗠𝗢𝗗𝗘𝗥𝗔𝗧𝗢𝗥𝗘 ✦  
-              𝐌𝐀𝐓𝐓𝐄𝐁𝐎𝐓
-⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-⚙️ 𝗖𝗼𝗺𝗮𝗻𝗱𝗶 𝗱𝗶𝘀𝗽𝗼𝗻𝗶𝗯𝗶𝗹𝗶:
+const handler = async (message, { conn, usedPrefix, command }) => {
+    const userCount = Object.keys(global.db.data.users).length;
+    const botName = global.db.data.nomedelbot || 'ChatUnity';
 
-⟡ ${usedPrefix}impostanome
-⟡ ${usedPrefix}resettanome
-⟡ ${usedPrefix}gestisci @
-⟡ ${usedPrefix}setgruppi
-⟡ ${usedPrefix}aggiungigruppi @
-⟡ ${usedPrefix}resetgruppi @
-⟡ ${usedPrefix}setpp (immagine)
-
-🚫 Moderazione Utenti:
-⟡ ${usedPrefix}banuser @
-⟡ ${usedPrefix}unbanuser @
-⟡ ${usedPrefix}blockuser @
-⟡ ${usedPrefix}unblockuser @
-
-🧹 Pulizia & Gestione:
-⟡ ${usedPrefix}pulizia (+)
-⟡ ${usedPrefix}azzera @
-⟡ ${usedPrefix}aggiungi (num. messaggi) @
-⟡ ${usedPrefix}rimuovi (num. messaggi) @
-
-📁 File & Plugin:
-⟡ ${usedPrefix}getfile
-⟡ ${usedPrefix}salva (plugin)
-⟡ ${usedPrefix}dp (plugin)
-⟡ ${usedPrefix}getplugin
-
-🔗 Gruppi:
-⟡ ${usedPrefix}join + link
-⟡ ${usedPrefix}out
-
-⚡ Impostazioni Avanzate:
-⟡ ${usedPrefix}prefisso (?)
-⟡ ${usedPrefix}resettaprefisso
-⟡ ${usedPrefix}godmode {autoadmin}
-
-⬛╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌⬛
-
-
-`;
-
-  await conn.sendMessage(m.chat, {
-    text: commandList,
-    contextInfo: {
-      externalAdReply: {
-        title: "𝕸𝖆𝖙𝖙𝖊 𝖇𝖔𝖙✦ - 𝐎𝐖𝐍𝐄𝐑 𝐌𝐄𝐍𝐔",
-        body: "BY MATTE - 𝐓𝐇𝐄 𝐁𝐄𝐒𝐓",
-        thumbnail: await fs.readFile('./storage/image/chatunity.png'), // Aggiungi l'immagine di anteprima
-        mediaType: 1,
-        showAdAttribution: true,
-        renderLargerThumbnail: true,
-      },
-     // forwardingScore: 1,
-     // isForwarded: true,
-      forwardedNewsletterMessageInfo: {
-        newsletterJid: '120363370244642449@newsletter',
-        serverMessageId: '',
-        newsletterName: botName
-      }
+    if (command === 'menu') {
+        return await (await import('./menu-principale.js')).default(message, { conn, usedPrefix });
     }
-  }, { quoted: m });
+    if (command === 'menuadmin') {
+        return await (await import('./menu-admin.js')).default(message, { conn, usedPrefix });
+    }
+    if (command === 'menusicurezza') {
+        return await (await import('./menu-sicurezza.js')).default(message, { conn, usedPrefix });
+    }
+    if (command === 'menugruppo') {
+        return await (await import('./menu-gruppo.js')).default(message, { conn, usedPrefix });
+    }
+
+    const menuText = generateMenuText(usedPrefix, botName, userCount);
+
+    const videoPath = path.join(__dirname, '../menu/edit3.mp4'); 
+    await conn.sendMessage(
+        message.chat,
+        {
+            video: { url: videoPath },
+            caption: menuText,
+            footer: 'Scegli un menu:',
+            buttons: [
+                { buttonId: `${usedPrefix}menu`, buttonText: { displayText: "🏠 Menu Principale" }, type: 1 },
+                { buttonId: `${usedPrefix}menuadmin`, buttonText: { displayText: "🛡️ Menu Admin" }, type: 1 },
+                { buttonId: `${usedPrefix}menusicurezza`, buttonText: { displayText: "🚨 Menu Sicurezza" }, type: 1 },
+                { buttonId: `${usedPrefix}menugruppo`, buttonText: { displayText: "👥 Menu Gruppo" }, type: 1 },
+                { buttonId: `${usedPrefix}menuia`, buttonText: { displayText: "🤖 Menu IA" }, type: 1 }
+            ],
+            viewOnce: true,
+            headerType: 4
+        }
+    );
 };
 
-handler.help = ["menu"];
+handler.help = ['menuowner', 'menu', 'menuadmin', 'menusicurezza', 'menugruppo'];
 handler.tags = ['menu'];
-handler.command = /^(menuowner|owner)$/i;
+handler.command = /^(menuowner|menu|menuadmin|menusicurezza|menugruppo)$/i;
 
 export default handler;
 
-function clockString(ms) {
-  const time = [
-    Math.floor(ms / 3600000),
-    Math.floor(ms / 60000) % 60,
-    Math.floor(ms / 1000) % 60
-  ].map(t => 
-    t.toString().padStart(2, '0')
-  ).join(':');
-  return time;
+function generateMenuText(prefix, botName, userCount) {
+    return `
+╭━〔 *💬 𝑴𝑬𝑵𝑼 𝑶𝑾𝑵𝑬𝑹 💬* 〕━┈⊷
+┃◈╭─────────────·๏
+┃◈┃• *𝑪𝑶𝑴𝑨𝑵𝑫𝑰 𝑹𝑰𝑺𝑬𝑹𝑽𝑨𝑻𝑰 𝑨𝑳𝑳'𝑶𝑾𝑵𝑬𝑹*
+┃◈┃
+┃◈┃• ⚙️ *${prefix}impostanome*
+┃◈┃• ⚙️ *${prefix}resetnome*
+┃◈┃• ⚙️ *${prefix}gestisci* @
+┃◈┃• ⚙️ *${prefix}setgruppi*
+┃◈┃• ⚙️ *${prefix}aggiungigruppi* @
+┃◈┃• ⚙️ *${prefix}resetgruppi* @
+┃◈┃• ⚙️ *${prefix}setpp* (immagine)
+┃◈┃• ⚙️ *${prefix}banuser* @
+┃◈┃• ⚙️ *${prefix}unbanuser* @
+┃◈┃• ⚙️ *${prefix}blockuser* @
+┃◈┃• ⚙️ *${prefix}unblockuser* @
+┃◈┃• ⚙️ *${prefix}pulizia* (+)
+┃◈┃• ⚙️ *${prefix}getfile*
+┃◈┃• ⚙️ *${prefix}salva* (plugin)
+┃◈┃• ⚙️ *${prefix}dp* (plugin)
+┃◈┃• ⚙️ *${prefix}getplugin*
+┃◈┃• ⚙️ *${prefix}join* + link
+┃◈┃• ⚙️ *${prefix}out*
+┃◈┃• ⚙️ *${prefix}prefisso* (?)
+┃◈┃• ⚙️ *${prefix}resetprefisso*
+┃◈┃• ⚙️ *${prefix}godmode* {autoadmin}
+┃◈┃• ⚙️ *${prefix}azzera* @
+┃◈┃• ⚙️ *${prefix}aggiungi* (num. messaggi) @
+┃◈┃• ⚙️ *${prefix}rimuovi* (num. messaggi) @
+┃◈┃• ⚙️ *${prefix}everygroup* (comando)
+┃◈┃• ⚙️ *${prefix}banchat* (gruppo)
+┃◈┃• ⚙️ *${prefix}unbanchat* (gruppo)
+┃◈┃• ⚙️ *${prefix}riavvia*
+┃◈┃• ⚙️ *${prefix}spegnibot*
+┃◈┃• ⚙️ *${prefix}aggiornabot*
+┃◈┃
+┃◈└───────────┈⊷
+┃◈┃• *𝑽𝑬𝑹𝑺𝑰𝑶𝑵𝑬:* ${vs}
+┃◈┃•  𝐂𝐎𝐋𝐋𝐀𝐁: 𝐃𝐑𝐆𝐁
+┃◈┃• *𝐒𝐔𝐏𝐏𝐎𝐑𝐓𝐎:* (.supporto)
+╰━━━━━━━━━━━━━┈·๏
+`.trim();
 }
